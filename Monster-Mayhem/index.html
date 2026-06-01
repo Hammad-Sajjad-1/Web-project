@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Mayhem - Web Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-container">
+            <div class="welcome-header">
+                <h1>⚔️ MONSTER MAYHEM ⚔️</h1>
+                <p class="tagline">A Thrilling Web Adventure</p>
+            </div>
+
+            <div class="welcome-content">
+                <div class="welcome-section">
+                    <h2>📖 How to Play</h2>
+                    <div class="instructions-grid">
+                        <div class="instruction-card">
+                            <div class="instruction-icon">🎯</div>
+                            <h3>Select Target</h3>
+                            <p>Click on a monster to select it as your target for attack</p>
+                        </div>
+                        <div class="instruction-card">
+                            <div class="instruction-icon">⚡</div>
+                            <h3>Attack</h3>
+                            <p>Press <strong>A</strong> or click Attack to damage the selected monster</p>
+                        </div>
+                        <div class="instruction-card">
+                            <div class="instruction-icon">🛡️</div>
+                            <h3>Defend</h3>
+                            <p>Press <strong>D</strong> or click Defend to reduce incoming damage by 50%</p>
+                        </div>
+                        <div class="instruction-card">
+                            <div class="instruction-icon">💚</div>
+                            <h3>Heal</h3>
+                            <p>Press <strong>H</strong> or click Heal to restore 25 HP (costs experience)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-section">
+                    <h2>🎮 Game Mechanics</h2>
+                    <ul class="mechanics-list">
+                        <li><strong>Objective:</strong> Defeat all monsters on the board to advance to the next level</li>
+                        <li><strong>Difficulty:</strong> Each level adds more monsters and increases their strength</li>
+                        <li><strong>Experience:</strong> Defeated monsters grant experience points</li>
+                        <li><strong>Leveling:</strong> Accumulate 100 EXP to level up and increase power</li>
+                        <li><strong>Health:</strong> Monitor your health carefully - it's your lifeline!</li>
+                        <li><strong>Game Over:</strong> Defeat ends when your health reaches 0</li>
+                    </ul>
+                </div>
+
+                <div class="welcome-section">
+                    <h2>👹 Monster Types</h2>
+                    <div class="monsters-preview">
+                        <div class="monster-info">
+                            <span class="monster-emoji">👹</span> Goblin
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">🧌</span> Orc
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">👺</span> Troll
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">🐉</span> Dragon
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">🐺</span> Werewolf
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">💀</span> Skeleton
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">🧙‍♀️</span> Witch
+                        </div>
+                        <div class="monster-info">
+                            <span class="monster-emoji">😈</span> Demon
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-section">
+                    <h2>💡 Pro Tips</h2>
+                    <ul class="tips-list">
+                        <li>🎯 <strong>Focus Fire:</strong> Concentrate on one monster at a time</li>
+                        <li>🛡️ <strong>Tactical Defense:</strong> Use Defend when your health is low</li>
+                        <li>💰 <strong>Smart Healing:</strong> Healing is expensive - use it strategically</li>
+                        <li>📈 <strong>Build Stats:</strong> Let your level increase your power before rushing ahead</li>
+                        <li>🌊 <strong>Wave Management:</strong> Clear one wave before taking on the next</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="welcome-footer">
+                <button class="btn-start-game" id="startGameBtn">🚀 START ADVENTURE</button>
+                <p class="welcome-note">Good luck, brave hero! ⚔️</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="gameContainer" style="display: none;">
+        <header class="game-header">
+            <h1>⚔️ Monster Mayhem ⚔️</h1>
+            <div class="header-stats">
+                <div class="stat">
+                    <span class="stat-label">Health:</span>
+                    <div class="health-bar">
+                        <div class="health-fill" id="playerHealth"></div>
+                    </div>
+                    <span id="healthText">100/100</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="score">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Level:</span>
+                    <span id="level">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Monsters Defeated:</span>
+                    <span id="monstersDefeated">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-wrapper">
+            <div class="game-board" id="gameBoard">
+                <!-- Monsters will be dynamically added here -->
+            </div>
+
+            <aside class="game-sidebar">
+                <div class="player-info">
+                    <h2>👤 Player Stats</h2>
+                    <div class="info-box">
+                        <p><strong>Experience:</strong> <span id="experience">0</span>/100</p>
+                        <div class="exp-bar">
+                            <div class="exp-fill" id="expFill"></div>
+                        </div>
+                        <p><strong>Power Level:</strong> <span id="powerLevel">1</span></p>
+                        <p><strong>Armor:</strong> <span id="armor">10</span></p>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <h2>🎮 Controls</h2>
+                    <button id="attackBtn" class="btn btn-primary">⚡ Attack (A)</button>
+                    <button id="defendBtn" class="btn btn-secondary">🛡️ Defend (D)</button>
+                    <button id="healBtn" class="btn btn-success">💚 Heal (H)</button>
+                    <button id="newGameBtn" class="btn btn-danger">🔄 New Game</button>
+                </div>
+
+                <div class="current-monster">
+                    <h2>🦹 Target Monster</h2>
+                    <div class="monster-display" id="monsterDisplay">
+                        <p>Select a monster to attack</p>
+                    </div>
+                </div>
+
+                <div class="game-message">
+                    <h2>📢 Messages</h2>
+                    <div class="message-log" id="messageLog">
+                        <p class="log-entry">Game started! Click on a monster to attack!</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="game-footer">
+            <p>Monster Mayhem © 2024 | A Thrilling Web Adventure</p>
+        </footer>
+    </div>
+    </div>
+
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/interaction.js"></script>
+</body>
+</html>
