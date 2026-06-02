@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monster Mayhem - Web Game</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/hexagon.css">
 </head>
 <body>
     <!-- Welcome Screen -->
@@ -129,10 +130,15 @@
             </div>
         </header>
 
-        <div class="game-wrapper">
-            <div class="game-board" id="gameBoard">
-                <!-- Monsters will be dynamically added here -->
-            </div>
+        <!-- Game Mode Selector -->
+        <div class="game-mode-selector" id="gameModeSelector" style="display: none;">
+            <button class="btn btn-mode" id="classicModeBtn">🎮 Classic Mode</button>
+            <button class="btn btn-mode" id="hexagonModeBtn">🔷 Hexagon Mode</button>
+        </div>
+
+        <!-- Classic Game -->
+        <div class="game-wrapper" id="classicGameWrapper">
+            <div class="game-board" id="gameBoard"></div>
 
             <aside class="game-sidebar">
                 <div class="player-info">
@@ -171,6 +177,54 @@
             </aside>
         </div>
 
+        <!-- Hexagon Game -->
+        <div class="hexagon-game-wrapper" id="hexagonGameWrapper" style="display: none;">
+            <div class="hexagon-header">
+                <h2>🔷 Hexagonal Battle Arena 🔷</h2>
+                <div class="hexagon-stats">
+                    <div><strong>Your Position:</strong> <span id="hexPlayerPos">—</span></div>
+                    <div><strong>Selected:</strong> <span id="hexSelected">None</span></div>
+                    <div><strong>Movement Range:</strong> <span id="hexRange">5</span></div>
+                </div>
+            </div>
+
+            <div class="hexagon-container">
+                <div class="hex-grid-container" id="hexGridContainer"></div>
+
+                <aside class="hex-sidebar">
+                    <div class="hex-info-panel">
+                        <h3>📍 Hexagon Info</h3>
+                        <div class="hex-info-box" id="hexInfoBox">
+                            <p>Select a hexagon to view details</p>
+                        </div>
+                    </div>
+
+                    <div class="hex-actions">
+                        <h3>⚙️ Actions</h3>
+                        <button class="btn btn-primary" id="hexMoveBtn">Move</button>
+                        <button class="btn btn-success" id="hexAttackBtn">Attack</button>
+                        <button class="btn btn-danger" id="switchGameModeBtn">↩️ Back</button>
+                    </div>
+
+                    <div class="hex-legend">
+                        <h3>📋 Legend</h3>
+                        <div class="legend-item">
+                            <div class="legend-color hover"></div>
+                            <span>Hover</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color selected"></div>
+                            <span>Selected</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color path"></div>
+                            <span>Path</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
         <footer class="game-footer">
             <p>Monster Mayhem © 2024 | A Thrilling Web Adventure</p>
         </footer>
@@ -178,6 +232,8 @@
     </div>
 
     <script src="js/board.js"></script>
+    <script src="js/hexagon-grid.js"></script>
+    <script src="js/hexagon-game.js"></script>
     <script src="js/game.js"></script>
     <script src="js/interaction.js"></script>
 </body>

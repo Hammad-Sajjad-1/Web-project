@@ -1,0 +1,62 @@
+/* Hexagonal Grid Styling */
+
+.hex-grid-container {
+    background: linear-gradient(135deg, rgba(26, 33, 46, 0.8) 0%, rgba(15, 52, 96, 0.8) 100%);
+    border: 2px solid #4ecdc4;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(78, 205, 196, 0.3),
+                inset 0 0 30px rgba(78, 205, 196, 0.1);
+    overflow: hidden;
+}
+
+.hexagon {
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hexagon Hover State */
+.hexagon.hex-hover {
+    filter: brightness(1.2);
+    border-color: #ffd93d !important;
+    background: linear-gradient(135deg, #3a6b16 0%, #2a4c0e 100%) !important;
+}
+
+/* Hexagon Selected State */
+.hexagon.hex-selected {
+    filter: brightness(1.4);
+    border-color: #ff6b6b !important;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%) !important;
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* Hexagon Path State */
+.hexagon.hex-path {
+    border-color: #4ecdc4 !important;
+}
+
+/* Character Icon in Hexagon */
+.hexagon {
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Hexagon Grid Responsive */
+@media (max-width: 1200px) {
+    .hex-grid-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hex-grid-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hex-grid-container {
+        padding: 8px;
+    }
+}

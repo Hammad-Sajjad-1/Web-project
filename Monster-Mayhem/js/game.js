@@ -24,6 +24,8 @@ class Game {
         this.difficulty = 1;
         this.turnCount = 0;
         this.gameStarted = false;
+        this.currentGameMode = 'classic';
+        this.keyboardListenerAdded = false;
 
         this.initializeUI();
         this.setupWelcomeScreen();
@@ -59,9 +61,9 @@ class Game {
      * Setup welcome screen
      */
     setupWelcomeScreen() {
-        this.elements.startGameBtn.addEventListener('click', () => {
+        this.elements.startGameBtn.onclick = () => {
             this.startGame();
-        });
+        };
 
         // Also allow Enter key to start
         document.addEventListener('keydown', (e) => {
@@ -92,24 +94,125 @@ class Game {
      */
     initializeGame() {
         this.setupEventListeners();
-        this.startNewGame();
+        this.setupGameModeSelector();
+        this.showGameModeSelector();
+    }
+
+    /**
+     * Setup game mode selector
+     */
+    setupGameModeSelector() {
+        const classicModeBtn = document.getElementById('classicModeBtn');
+        const hexagonModeBtn = document.getElementById('hexagonModeBtn');
+        
+        classicModeBtn.onclick = () => this.switchGameMode('classic');
+        hexagonModeBtn.onclick = () => this.switchGameMode('hexagon');
+    }
+
+    /**
+     * Show game mode selector to player
+     */
+    showGameModeSelector() {
+        // Initialize player state
+        this.removeGameOverOverlay();
+        this.gameOver = false;
+        this.player = {
+            health: 100,
+            maxHealth: 100,
+            experience: 0,
+            maxExperience: 100,
+            level: 1,
+            powerLevel: 1,
+            armor: 10,
+            score: 0,
+            monstersDefeated: 0,
+            defending: false,
+            healingCost: 30
+        };
+
+        this.selectedMonster = null;
+        this.difficulty = 1;
+        this.turnCount = 0;
+
+        // Show game mode selector
+        const modeSelector = document.getElementById('gameModeSelector');
+        modeSelector.style.display = 'flex';
+        
+        // Hide both wrappers
+        document.getElementById('classicGameWrapper').style.display = 'none';
+        document.getElementById('hexagonGameWrapper').style.display = 'none';
+        
+        this.updateUI();
+    }
+
+    /**
+     * Switch between game modes
+     */
+    switchGameMode(mode) {
+        const classicWrapper = document.getElementById('classicGameWrapper');
+        const hexagonWrapper = document.getElementById('hexagonGameWrapper');
+        const modeSelector = document.getElementById('gameModeSelector');
+        
+        this.currentGameMode = mode;
+        
+        if (mode === 'classic') {
+            modeSelector.style.display = 'none';
+            classicWrapper.style.display = 'grid';
+            hexagonWrapper.style.display = 'none';
+            
+            if (hexagonGameMode) {
+                hexagonGameMode.cleanup();
+                hexagonGameMode = null;
+            }
+            
+            this.initializeClassicMode();
+        } else if (mode === 'hexagon') {
+            modeSelector.style.display = 'none';
+            classicWrapper.style.display = 'none';
+            hexagonWrapper.style.display = 'flex';
+            
+            // Initialize hexagon mode
+            hexagonGameMode = new HexagonGameMode(this);
+            hexagonGameMode.initialize();
+            
+            this.clearMessages();
+            this.addMessage('🔷 Welcome to Hexagon Battle Mode!', 'log-victory');
+            this.addMessage('Select hexagons to move or attack monsters', 'log-defend');
+        }
+    }
+
+    /**
+     * Initialize classic game mode
+     */
+    initializeClassicMode() {
+        board.initialize(this.difficulty);
+        this.updateUI();
+        this.clearMessages();
+        this.addMessage('🎮 Classic Mode Started! Select a monster and begin battling!');
+        this.addMessage('⌨️ Keyboard Shortcuts: A=Attack, D=Defend, H=Heal');
     }
 
     /**
      * Setup event listeners for buttons and controls
      */
     setupEventListeners() {
-        this.elements.attackBtn.addEventListener('click', () => this.playerAttack());
-        this.elements.defendBtn.addEventListener('click', () => this.playerDefend());
-        this.elements.healBtn.addEventListener('click', () => this.playerHeal());
-        this.elements.newGameBtn.addEventListener('click', () => this.resetToWelcome());
+        this.elements.attackBtn.onclick = () => this.playerAttack();
+        this.elements.defendBtn.onclick = () => this.playerDefend();
+        this.elements.healBtn.onclick = () => this.playerHeal();
+        this.elements.newGameBtn.onclick = () => this.resetToWelcome();
 
-        document.addEventListener('keydown', (e) => {
-            if (this.gameOver || !this.gameStarted) return;
-            if (e.key.toLowerCase() === 'a') this.playerAttack();
-            if (e.key.toLowerCase() === 'd') this.playerDefend();
-            if (e.key.toLowerCase() === 'h') this.playerHeal();
-        });
+        if (!this.keyboardListenerAdded) {
+            document.addEventListener('keydown', (e) => {
+                if (this.gameOver || !this.gameStarted) return;
+                if (this.currentGameMode !== 'classic') return;
+
+                const key = e.key.toLowerCase();
+                if (key === 'a') this.playerAttack();
+                if (key === 'd') this.playerDefend();
+                if (key === 'h') this.playerHeal();
+            });
+            this.keyboardListenerAdded = true;
+        }
     }
 
     /**
@@ -132,6 +235,19 @@ class Game {
         board.clear();
         this.clearMessages();
         this.selectedMonster = null;
+        
+        // Cleanup hexagon mode if active
+        if (hexagonGameMode) {
+            hexagonGameMode.cleanup();
+            hexagonGameMode = null;
+        }
+    }
+
+    /**
+     * Start a new game (show mode selector)
+     */
+    startNewGame() {
+        this.showGameModeSelector();
     }
 
     /**
@@ -142,39 +258,6 @@ class Game {
         if (overlay) {
             overlay.remove();
         }
-    }
-
-    /**
-     * Start a new game
-     */
-    startNewGame() {
-        // Remove game over overlay if exists
-        this.removeGameOverOverlay();
-        
-        this.gameOver = false;
-        this.player = {
-            health: 100,
-            maxHealth: 100,
-            experience: 0,
-            maxExperience: 100,
-            level: 1,
-            powerLevel: 1,
-            armor: 10,
-            score: 0,
-            monstersDefeated: 0,
-            defending: false,
-            healingCost: 30
-        };
-
-        this.selectedMonster = null;
-        this.difficulty = 1;
-        this.turnCount = 0;
-
-        board.initialize(this.difficulty);
-        this.updateUI();
-        this.clearMessages();
-        this.addMessage('🎮 Game started! Select a monster and begin battling!');
-        this.addMessage('⌨️ Keyboard: A=Attack, D=Defend, H=Heal');
     }
 
     /**
@@ -288,7 +371,7 @@ class Game {
 
         const healAmount = 25;
         if (this.player.experience < this.player.healingCost) {
-            this.addMessage(`💔 You need ${this.player.healingCost} health points to heal! Current: ${this.player.experience}`, 'log-damage');
+            this.addMessage(`💔 You need ${this.player.healingCost} EXP to heal! Current: ${this.player.experience}`, 'log-damage');
             return;
         }
 
